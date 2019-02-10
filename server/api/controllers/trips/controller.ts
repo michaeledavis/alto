@@ -26,9 +26,13 @@ export class Controller {
   cancel(req: Request, res: Response, next: any): void {
     TripsService.cancelById(req.params.id).then(() => {
       res.status(204).end();
-    }).catch((err) => {
-      next(err);
-    });
+    }).catch(next);
+  }
+
+  setNote(req: Request, res: Response, next: any): void {
+    TripsService.setNoteById(req.params.id, req.body.note).then(() => {
+      res.status(204).end();
+    }).catch(next);
   }
 
 }

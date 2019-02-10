@@ -155,6 +155,19 @@ export class TripsService {
             });
         });
     }
+
+    setNoteById(tripId: string, note: string): Promise<void> {
+        log.info(`Updating note for trip with tripId: [${tripId}]`);
+
+        return this.byId(tripId).then((trip) => {
+            if (!trip) {
+                throw new Error(`Could not find trip for tripId: [${tripId}]`);
+            }
+            trips.set(trip.id, {...trip,
+                note
+            });
+        });
+    }
 }
 
 export default new TripsService();

@@ -17,15 +17,15 @@ produces:
 
 
 definitions:
-  ExampleBody:
+  NoteBody:
     type: object
-    title: example
+    title: A trip note
     required:
-      - name
+      - note
     properties:
-      name:
+      note:
         type: string
-        example: no_stress
+        example: Can you drop me off at AA International Bag Drop please?
 
 paths:
   /trips:
@@ -71,6 +71,27 @@ paths:
       responses:
         204:
           description: The trip was cancelled successfully
+  /trips/{id}/note:
+    put:
+      tags:
+        - Trips
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the trip to update
+          type: string
+        - name: note
+          in: body
+          description: The note you wish to set
+          required: true
+          schema:
+            $ref: "#/definitions/NoteBody"
+      responses:
+        204:
+          description: The note was updated successfully
+        404:
+          description: Trip not found
 
   /spec:
     get:
