@@ -5,8 +5,8 @@ info:
   description: Mock API app for Alto
 basePath: /api/v1
 tags:
-  - name: Examples
-    description: Simple example endpoints
+  - name: Trips
+    description: Endpoints to retrieve trips
   - name: Specification
     description: The swagger API specification
 
@@ -28,44 +28,49 @@ definitions:
         example: no_stress
 
 paths:
-  /examples:
+  /trips:
     get:
       tags:
-        - Examples
-      description: Fetch all examples
+        - Trips
+      description: Fetch all trips
       responses:
         200:
-          description: Returns all examples
-    post:
-      tags:
-        - Examples
-      description: Create a new example
-      parameters:
-        - name: example
-          in: body
-          description: an example
-          required: true
-          schema: 
-            $ref: "#/definitions/ExampleBody"
-      responses:
-        200:
-          description: Returns all examples
-
-  /examples/{id}:
+          description: Returns all trips
+  /trips/current:
     get:
       tags:
-        - Examples
+        - Trips
+      description: Get the current trip for the currently signed in user
+      responses:
+        200:
+          description: Returns the current trip
+  /trips/{id}:
+    get:
+      tags:
+        - Trips
       parameters:
         - name: id
           in: path
           required: true
-          description: The id of the example to retrieve
-          type: integer
+          description: The id of the trip to retrieve
+          type: string
       responses:
         200:
-          description: Return the example with the specified id
+          description: Return the trip with the specified id
         404:
-          description: Example not found
+          description: Trip not found
+    delete:
+      tags:
+        - Trips
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the trip to cancel
+          type: string
+      responses:
+        204:
+          description: The trip was cancelled successfully
 
   /spec:
     get:

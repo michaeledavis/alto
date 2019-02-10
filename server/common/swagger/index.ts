@@ -1,6 +1,7 @@
 import middleware from 'swagger-express-middleware';
 import { Application } from 'express';
 import path from 'path';
+import log from '../logger';
 
 export default function (app: Application, routes: (app: Application) => void) {
   middleware(path.join(__dirname, 'Api.yaml'), app, function(err, middleware) {
@@ -32,14 +33,26 @@ export default function (app: Application, routes: (app: Application) => void) {
       middleware.validateRequest());
 
     // Error handler to display the validation error as HTML
-    app.use(function (err, req, res, next) {
-      res.status(err.status);
-      res.send(
-        '<h1>' + err.status + ' Error</h1>' +
-        '<pre>' + err.message + '</pre>'
-      );
-    });
+    // app.use(function (err, req, res, next) {
+    //   res.status(err.status);
+    //   res.send(
+    //     '<h1>' + err.status + ' Error</h1>' +
+    //     '<pre>' + err.message + '</pre>'
+    //   );
+    // });
 
     routes(app);
+
+    app.use(function(err, req, res, next) {
+      log.error('swagger error');
+      res
+        .status(500)
+        .json({
+          message: 'An unexpected error occurred.',
+          code: '1000',
+          service: 'alto-trip-service'
+        });
+    });
+
   });
 }
