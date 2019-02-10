@@ -5,4 +5,5 @@ export default express.Router()
   .get('/current', controller.currentByUser)
   .get('/:id', controller.byId)
   .delete('/:id', controller.cancel)
-  .put('/:id/note', controller.setNote);
+  .put('/:id/note', controller.setNote)
+  .put('/:id/vibe', controller.setVibe);

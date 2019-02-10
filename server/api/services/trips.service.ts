@@ -168,6 +168,22 @@ export class TripsService {
             });
         });
     }
+
+    // TODO: manage vibes in a separate service - Preference service?
+    setVibeById(tripId: string, vibe: string): Promise<void> {
+        log.info(`Updating vibe for trip with tripId: [${tripId}] to vibe: [${vibe}]`);
+
+        return this.byId(tripId).then((trip) => {
+            if (!trip) {
+                throw new Error(`Could not find trip for tripId: [${tripId}]`);
+            }
+            trips.set(trip.id, {...trip,
+                vibe: {
+                    name: vibe
+                }
+            });
+        });
+    }
 }
 
 export default new TripsService();

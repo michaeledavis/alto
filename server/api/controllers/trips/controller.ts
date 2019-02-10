@@ -35,5 +35,11 @@ export class Controller {
     }).catch(next);
   }
 
+  setVibe(req: Request, res: Response, next: any): void {
+    TripsService.setVibeById(req.params.id, req.body.vibe).then(() => {
+      res.status(204).end();
+    }).catch(next);
+  }
+
 }
 export default new Controller();

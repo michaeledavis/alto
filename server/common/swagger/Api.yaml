@@ -26,6 +26,15 @@ definitions:
       note:
         type: string
         example: Can you drop me off at AA International Bag Drop please?
+  VibeBody:
+    type: object
+    title: A trip vibe
+    required:
+      - vibe
+    properties:
+      vibe:
+        type: string
+        example: VAPORWAVE
 
 paths:
   /trips:
@@ -87,6 +96,27 @@ paths:
           required: true
           schema:
             $ref: "#/definitions/NoteBody"
+      responses:
+        204:
+          description: The note was updated successfully
+        404:
+          description: Trip not found
+  /trips/{id}/vibe:
+    put:
+      tags:
+        - Trips
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the trip to update
+          type: string
+        - name: vibe
+          in: body
+          description: The vibe you wish to set
+          required: true
+          schema:
+            $ref: "#/definitions/VibeBody"
       responses:
         204:
           description: The note was updated successfully
