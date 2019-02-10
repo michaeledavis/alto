@@ -1,5 +1,6 @@
 import TripsService from '../../services/trips.service';
 import {Request, Response} from 'express';
+import TripEmitter from '../../../common/trip.eventemitter';
 
 export class Controller {
 
@@ -16,6 +17,37 @@ export class Controller {
   byId(req: Request, res: Response, next: any): void {
     TripsService.byId(req.params.id).then(result => {
       res.json(result);
+    }).catch(next);
+  }
+
+  streamTripUpdates(req: Request, res: Response, next: any): void {
+    const tripId = req.params.id;
+
+    TripsService.byId(tripId).then(_ => {
+
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      });
+
+      const heartbeat = setInterval(() => {
+        res.write(':heartbeat' + '\n\n');
+      }, 1000);
+
+      const listener = (trip) => {
+        res.write('data: ' + JSON.stringify(trip) + '\n\n');
+      };
+
+      TripEmitter.addListener(tripId, listener);
+
+      console.log(TripEmitter.listenerCount(tripId));
+
+      req.on('close', () => {
+        clearInterval(heartbeat);
+        TripEmitter.removeListener(tripId, listener);
+      });
+
     }).catch(next);
   }
 

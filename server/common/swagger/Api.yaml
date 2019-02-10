@@ -89,6 +89,21 @@ paths:
       responses:
         204:
           description: The trip was cancelled successfully
+  /trips/{id}/updates:
+    get:
+      tags:
+        - Trips
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the trip to retrieve updates for
+          type: string
+      responses:
+        200:
+          description: Streams server-sent events with updates to the specified trip
+        404:
+          description: Trip not found
   /trips/{id}/note:
     put:
       tags:

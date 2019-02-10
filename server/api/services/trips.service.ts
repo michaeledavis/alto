@@ -4,7 +4,9 @@ import _ from 'lodash';
 import moment from 'moment';
 import {Moment} from "moment";
 import {TripNotFoundError} from "../../common/errors";
+import TripEmitter from '../../common/trip.eventemitter';
 
+// TODO: Move these models into their own file(s)?
 interface Money {
     currency: string,
     amount: number,
@@ -148,9 +150,11 @@ export class TripsService {
         log.info(`Cancelling trip for tripId: [${tripId}]`);
 
         return this.byId(tripId).then((trip) => {
-            trips.set(trip.id, {...trip,
+            const updatedTrip = {...trip,
                 cancelled: moment()
-            });
+            };
+            trips.set(trip.id, updatedTrip);
+            TripEmitter.emit(tripId, updatedTrip);
         });
     }
 
@@ -158,9 +162,11 @@ export class TripsService {
         log.info(`Updating note for trip with tripId: [${tripId}]`);
 
         return this.byId(tripId).then((trip) => {
-            trips.set(trip.id, {...trip,
+            const updatedTrip = {...trip,
                 note
-            });
+            };
+            trips.set(trip.id, updatedTrip);
+            TripEmitter.emit(tripId, updatedTrip);
         });
     }
 
@@ -169,11 +175,13 @@ export class TripsService {
         log.info(`Updating vibe for trip with tripId: [${tripId}] to vibe: [${vibe}]`);
 
         return this.byId(tripId).then((trip) => {
-            trips.set(trip.id, {...trip,
+            const updatedTrip = {...trip,
                 vibe: {
                     name: vibe
                 }
-            });
+            };
+            trips.set(trip.id, updatedTrip);
+            TripEmitter.emit(tripId, updatedTrip);
         });
     }
 
