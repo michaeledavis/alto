@@ -3,6 +3,7 @@ import log from '../../common/logger'
 import _ from 'lodash';
 import moment from 'moment';
 import {Moment} from "moment";
+import {TripNotFoundError} from "../../common/errors";
 
 interface Money {
     currency: string,
@@ -120,8 +121,8 @@ export class TripsService {
         const trip = trips.get(tripId);
 
         if (!trip) {
-            log.warn(`Current trip could not be found for tripId: [${tripId}]`);
-            return Promise.resolve(null);
+            log.warn(`Trip could not be found for tripId: [${tripId}]`);
+            throw new TripNotFoundError(tripId)
         } else {
             log.info(`Returning trip with tripId: [${tripId}]`);
             return Promise.resolve(trip);
@@ -147,9 +148,6 @@ export class TripsService {
         log.info(`Cancelling trip for tripId: [${tripId}]`);
 
         return this.byId(tripId).then((trip) => {
-            if (!trip) {
-                throw new Error(`Could not find trip for tripId: [${tripId}]`);
-            }
             trips.set(trip.id, {...trip,
                 cancelled: moment()
             });
@@ -160,9 +158,6 @@ export class TripsService {
         log.info(`Updating note for trip with tripId: [${tripId}]`);
 
         return this.byId(tripId).then((trip) => {
-            if (!trip) {
-                throw new Error(`Could not find trip for tripId: [${tripId}]`);
-            }
             trips.set(trip.id, {...trip,
                 note
             });
@@ -174,9 +169,6 @@ export class TripsService {
         log.info(`Updating vibe for trip with tripId: [${tripId}] to vibe: [${vibe}]`);
 
         return this.byId(tripId).then((trip) => {
-            if (!trip) {
-                throw new Error(`Could not find trip for tripId: [${tripId}]`);
-            }
             trips.set(trip.id, {...trip,
                 vibe: {
                     name: vibe

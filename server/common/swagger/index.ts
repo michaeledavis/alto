@@ -2,6 +2,7 @@ import middleware from 'swagger-express-middleware';
 import { Application } from 'express';
 import path from 'path';
 import log from '../logger';
+import {TripNotFoundError} from "../errors";
 
 export default function (app: Application, routes: (app: Application) => void) {
   middleware(path.join(__dirname, 'Api.yaml'), app, function(err, middleware) {
@@ -43,15 +44,27 @@ export default function (app: Application, routes: (app: Application) => void) {
 
     routes(app);
 
+    const serviceName = 'alto-trip-service';
+
     app.use(function(err, req, res, next) {
-      log.error('swagger error');
-      res
-        .status(500)
-        .json({
-          message: 'An unexpected error occurred.',
-          code: '1000',
-          service: 'alto-trip-service'
-        });
+
+      if (err.name === TripNotFoundError.name) {
+        res
+          .status(404)
+          .json({
+            message: err.message,
+            code: 404,
+            service: serviceName
+          })
+      } else {
+        res
+          .status(500)
+          .json({
+            message: 'An unexpected error occurred.',
+            code: '1000',
+            service: serviceName
+          });
+      }
     });
 
   });
