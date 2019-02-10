@@ -137,7 +137,7 @@ export class TripsService {
 
         if (!currentTrip) {
             log.warn(`Current trip could not be found for userId: [${userId}]`);
-            return Promise.resolve(null);
+            throw new TripNotFoundError(userId) // TODO: support userId for this error
         } else {
             log.info(`Returning trip with tripId: [${currentTrip.id}] for userId: [${userId}]`);
             return Promise.resolve(currentTrip);
@@ -174,6 +174,15 @@ export class TripsService {
                     name: vibe
                 }
             });
+        });
+    }
+
+    requestIdentificationById(tripId: string, color: string): Promise<void> {
+        log.info(`Request identification for trip with tripId: [${tripId}] with color: [${color}]`);
+
+        return this.byId(tripId).then(() => {
+            // TODO: Call the vehicle-service to flash the identification lights with the given color
+            return;
         });
     }
 }

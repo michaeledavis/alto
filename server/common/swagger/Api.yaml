@@ -35,6 +35,15 @@ definitions:
       vibe:
         type: string
         example: VAPORWAVE
+  ColorBody:
+    type: object
+    title: A hex RGB color used to blink the vehicle's lights
+    required:
+      - color
+    properties:
+      color:
+        type: string
+        example: '#FF0000'
 
 paths:
   /trips:
@@ -120,6 +129,27 @@ paths:
       responses:
         204:
           description: The note was updated successfully
+        404:
+          description: Trip not found
+  /trips/{id}/vehicle/identification-request:
+    post:
+      tags:
+        - Trips
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the trip to update
+          type: string
+        - name: color
+          in: body
+          description: The color you wish to identify the vehicle with
+          required: true
+          schema:
+            $ref: "#/definitions/ColorBody"
+      responses:
+        204:
+          description: The vehicle successfully identified itself
         404:
           description: Trip not found
 

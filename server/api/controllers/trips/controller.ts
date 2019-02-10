@@ -15,11 +15,7 @@ export class Controller {
 
   byId(req: Request, res: Response, next: any): void {
     TripsService.byId(req.params.id).then(result => {
-      if (!result) {
-        res.status(404).end();
-      } else {
-        res.json(result);
-      }
+      res.json(result);
     }).catch(next);
   }
 
@@ -37,6 +33,12 @@ export class Controller {
 
   setVibe(req: Request, res: Response, next: any): void {
     TripsService.setVibeById(req.params.id, req.body.vibe).then(() => {
+      res.status(204).end();
+    }).catch(next);
+  }
+
+  requestIdentification(req: Request, res: Response, next: any): void {
+    TripsService.requestIdentificationById(req.params.id, req.body.color).then(() => {
       res.status(204).end();
     }).catch(next);
   }
