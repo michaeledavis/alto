@@ -1,6 +1,5 @@
 import TripsService from '../../services/trips.service';
 import {Request, Response} from 'express';
-import log from '../../../common/logger';
 
 export class Controller {
 
@@ -21,7 +20,6 @@ export class Controller {
       } else {
         res.json(result);
       }
-    // });
     }).catch(next);
   }
 
@@ -29,7 +27,6 @@ export class Controller {
     TripsService.cancelById(req.params.id).then(() => {
       res.status(204).end();
     }).catch((err) => {
-      log.error('in catch');
       next(err);
     });
   }
