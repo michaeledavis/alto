@@ -4,7 +4,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import {TripNotFoundError} from '../errors/errors';
 import tripEmitter from '../emitters/trip.eventemitter';
-import {Trip} from '../models/trip.models';
+import {ContactInfo, Trip} from '../models/trip.models';
 import vehicleService from '../services/vehicle.service';
 import driverService from '../services/driver.service';
 import vibeService from '../services/vibe.service';
@@ -57,6 +57,13 @@ trips.set('1234', {
   },
   vibeId: 'VAPORWAVE_BEATS'
 });
+
+const sharedPhoneNumbers = [
+  '+15558908989',
+  '+15558908654',
+  '+15558906735',
+  '+15558901111',
+];
 
 export class TripService {
 
@@ -126,7 +133,7 @@ export class TripService {
   setVibeById(tripId: string, vibeId: string): Promise<void> {
     log.info(`Updating vibe for trip with tripId: [${tripId}] to vibeId: [${vibeId}]`);
 
-    return vibeService.validateVibe(vibeId).then(_ => {
+    return vibeService.validateVibe(vibeId).then(() => {
       return this.byId(tripId).then((trip) => {
         const updatedTrip = {
           ...trip,
@@ -135,6 +142,29 @@ export class TripService {
         trips.set(trip.id, updatedTrip);
         tripEmitter.emit(tripId, updatedTrip);
       });
+    });
+  }
+
+  getDriverContactInfoById(tripId: string): Promise<ContactInfo> {
+    log.info(`Retrieving contact info for trip with tripId: [${tripId}]`);
+
+    return this.byId(tripId).then((trip) => {
+      if (trip.contactInfo) {
+        return trip.contactInfo;
+      } else {
+        log.info(`Generating a private phone number for trip with tripId: [${tripId}]`);
+
+        const phoneNumber = _.sample(sharedPhoneNumbers);
+        const updatedTrip = {
+          ...trip,
+          contactInfo: {
+            phoneNumber
+          }
+        };
+        trips.set(trip.id, updatedTrip);
+
+        return updatedTrip.contactInfo;
+      }
     });
   }
 

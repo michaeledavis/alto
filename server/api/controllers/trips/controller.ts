@@ -24,7 +24,7 @@ export class Controller {
   streamTripUpdates(req: Request, res: Response, next: any): void {
     const tripId = req.params.id;
 
-    tripsService.byId(tripId).then(_ => {
+    tripsService.byId(tripId).then(() => {
 
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
@@ -67,6 +67,12 @@ export class Controller {
   setVibe(req: Request, res: Response, next: any): void {
     tripsService.setVibeById(req.params.id, req.body.vibeId).then(() => {
       res.status(204).end();
+    }).catch(next);
+  }
+
+  getDriverContactInfo(req: Request, res: Response, next: any): void {
+    tripsService.getDriverContactInfoById(req.params.id).then((result) => {
+      res.json(result);
     }).catch(next);
   }
 

@@ -8,4 +8,5 @@ export default express.Router()
   .delete('/:id', controller.cancel)
   .put('/:id/note', controller.setNote)
   .put('/:id/vibe', controller.setVibe)
+  .get('/:id/driver-contact-info', controller.getDriverContactInfo)
   .post('/:id/vehicle/identification-request', controller.requestIdentification);

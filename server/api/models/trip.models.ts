@@ -35,6 +35,10 @@ export interface Vehicle {
   name?: string
 }
 
+export interface ContactInfo {
+  phoneNumber: string
+}
+
 export interface Trip {
   id: string,
   userId: string,
@@ -48,5 +52,6 @@ export interface Trip {
   origin: Location,
   vehicle: Vehicle,
   driver: Driver,
-  vibeId: string
+  vibeId: string,
+  contactInfo?: ContactInfo
 }

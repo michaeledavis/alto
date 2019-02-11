@@ -155,6 +155,22 @@ paths:
           description: The vibe was updated successfully
         404:
           description: The trip was not found
+  /trips/{id}/driver-contact-info:
+    get:
+      tags:
+        - Trips
+      description: Get the contact information for your driver
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the trip to retrieve contact info for
+          type: string
+      responses:
+        200:
+          description: The contact information for the driver
+        404:
+          description: The trip was not found
   /trips/{id}/vehicle/identification-request:
     post:
       tags:
