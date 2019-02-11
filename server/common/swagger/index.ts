@@ -2,7 +2,7 @@ import middleware from 'swagger-express-middleware';
 import { Application } from 'express';
 import path from 'path';
 import log from '../logger';
-import {TripNotFoundError} from "../../api/errors/errors";
+import {BadRequestError, DriverNotFoundError, TripNotFoundError, VehicleNotFoundError} from "../../api/errors/errors";
 
 export default function (app: Application, routes: (app: Application) => void) {
   middleware(path.join(__dirname, 'Api.yaml'), app, function(err, middleware) {
@@ -48,12 +48,23 @@ export default function (app: Application, routes: (app: Application) => void) {
 
     app.use(function(err, req, res, next) {
 
-      if (err.name === TripNotFoundError.name) {
+      if (err.name === TripNotFoundError.name ||
+          err.name === DriverNotFoundError.name ||
+          err.name === VehicleNotFoundError.name) {
+
         res
           .status(404)
           .json({
             message: err.message,
             code: 404,
+            service: serviceName
+          })
+      } else if (err.name === BadRequestError.name) {
+        res
+          .status(400)
+          .json({
+            message: err.message,
+            code: 400,
             service: serviceName
           })
       } else {

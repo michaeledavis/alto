@@ -7,6 +7,7 @@ import tripEmitter from '../emitters/trip.eventemitter';
 import {Trip} from '../models/trip.models';
 import vehicleService from '../services/vehicle.service';
 import driverService from '../services/driver.service';
+import vibeService from '../services/vibe.service';
 
 let trips = new Map<string, Trip>();
 trips.set('1234', {
@@ -54,9 +55,7 @@ trips.set('1234', {
   driver: {
     id: '0809'
   },
-  vibe: { // TODO: should be just an identifier
-    name: 'Vaporwave Beats'
-  }
+  vibeId: 'VAPORWAVE_BEATS'
 });
 
 export class TripService {
@@ -119,19 +118,18 @@ export class TripService {
     });
   }
 
-  // TODO: manage vibes in a separate service - Preference service?
-  setVibeById(tripId: string, vibe: string): Promise<void> {
-    log.info(`Updating vibe for trip with tripId: [${tripId}] to vibe: [${vibe}]`);
+  setVibeById(tripId: string, vibeId: string): Promise<void> {
+    log.info(`Updating vibe for trip with tripId: [${tripId}] to vibeId: [${vibeId}]`);
 
-    return this.byId(tripId).then((trip) => {
-      const updatedTrip = {
-        ...trip,
-        vibe: {
-          name: vibe
-        }
-      };
-      trips.set(trip.id, updatedTrip);
-      tripEmitter.emit(tripId, updatedTrip);
+    return vibeService.validateVibe(vibeId).then(_ => {
+      return this.byId(tripId).then((trip) => {
+        const updatedTrip = {
+          ...trip,
+          vibeId
+        };
+        trips.set(trip.id, updatedTrip);
+        tripEmitter.emit(tripId, updatedTrip);
+      });
     });
   }
 

@@ -98,7 +98,7 @@ describe('Trips', () => {
 
   it('should update a trip\'s vibe', async () => {
     const tripId = '1234';
-    const updatedVibe = 'TEST_VIBE';
+    const updatedVibe = 'FIZZ';
 
     const result = await request(Server)
       .put(`/api/v1/trips/${tripId}/vibe`)
@@ -116,13 +116,13 @@ describe('Trips', () => {
       .to.be.an('object');
     expect(updatedResult.status)
       .to.equal(200);
-    expect(updatedResult.body.vibe.name)
+    expect(updatedResult.body.vibeId)
       .to.equal(updatedVibe);
   });
 
   it('should return a 404 when updating a non-existent trip\'s vibe', async () => {
     const tripId = '5678';
-    const updatedVibe = 'TEST_VIBE';
+    const updatedVibe = 'FIZZ';
 
     const result = await request(Server)
       .put(`/api/v1/trips/${tripId}/vibe`)
@@ -132,6 +132,20 @@ describe('Trips', () => {
       .to.be.an('object');
     expect(result.status)
       .to.equal(404);
+  });
+
+  it('should return a 400 when updating to an invalid vibe', async () => {
+    const tripId = '5678';
+    const updatedVibe = 'FIZZBUZZ';
+
+    const result = await request(Server)
+      .put(`/api/v1/trips/${tripId}/vibe`)
+      .send({vibe: updatedVibe});
+
+    expect(result.body)
+      .to.be.an('object');
+    expect(result.status)
+      .to.equal(400);
   });
 
   it('should request vehicle identification', async () => {
