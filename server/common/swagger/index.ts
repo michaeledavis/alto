@@ -1,7 +1,6 @@
 import middleware from 'swagger-express-middleware';
-import { Application } from 'express';
+import {Application} from 'express';
 import path from 'path';
-import log from '../logger';
 import {BadRequestError, DriverNotFoundError, TripNotFoundError, VehicleNotFoundError} from "../../api/errors/errors";
 
 export default function (app: Application, routes: (app: Application) => void) {
@@ -18,10 +17,6 @@ export default function (app: Application, routes: (app: Application) => void) {
     }));
 
     app.use(middleware.parseRequest({
-      // Configure the cookie parser to use secure cookies
-      cookie: {
-        secret: process.env.SESSION_SECRET
-      },
       // Don't allow JSON content over 100kb (default is 1mb)
       json: {
         limit: process.env.REQUEST_LIMIT

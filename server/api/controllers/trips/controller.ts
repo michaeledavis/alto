@@ -5,6 +5,7 @@ import tripEmitter from '../../emitters/trip.eventemitter';
 export class Controller {
 
   currentByUser(req: Request, res: Response, next: any): void {
+    // TODO: Get the current user from their authentication
     tripsService.currentByUser('5654').then(result => {
       if (!result) {
         res.status(404).end();
