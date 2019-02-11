@@ -1,9 +1,8 @@
 import middleware from 'swagger-express-middleware';
 import {Application} from 'express';
 import path from 'path';
-import {BadRequestError, DriverNotFoundError, TripNotFoundError, VehicleNotFoundError} from "../../api/errors/errors";
 
-export default function (app: Application, routes: (app: Application) => void) {
+export default function (app: Application, routes: (app: Application) => void, errorHandler: (app: Application) => void) {
   middleware(path.join(__dirname, 'Api.yaml'), app, function(err, middleware) {
 
     // Enable Express' case-sensitive and strict options
@@ -29,40 +28,6 @@ export default function (app: Application, routes: (app: Application) => void) {
       middleware.validateRequest());
 
     routes(app);
-
-    const serviceName = 'alto-trip-service';
-
-    app.use(function(err, req, res, next) {
-
-      if (err.name === TripNotFoundError.name ||
-          err.name === DriverNotFoundError.name ||
-          err.name === VehicleNotFoundError.name) {
-
-        res
-          .status(404)
-          .json({
-            message: err.message,
-            code: 404,
-            service: serviceName
-          })
-      } else if (err.name === BadRequestError.name) {
-        res
-          .status(400)
-          .json({
-            message: err.message,
-            code: 400,
-            service: serviceName
-          })
-      } else {
-        res
-          .status(500)
-          .json({
-            message: 'An unexpected error occurred.',
-            code: '1000',
-            service: serviceName
-          });
-      }
-    });
-
+    errorHandler(app);
   });
 }

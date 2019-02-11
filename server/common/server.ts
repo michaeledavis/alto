@@ -1,4 +1,4 @@
-import express, {Application, Request, Response, NextFunction} from 'express';
+import express, {Application} from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
 import http from 'http';
@@ -17,13 +17,14 @@ export default class ExpressServer {
     app.use(express.static(`${root}/public`));
   }
 
-  router(routes: (app: Application) => void): ExpressServer {
-    swaggerify(app, routes);
+  router(routes: (app: Application) => void, errorHandler: (app: Application) => void): ExpressServer {
+    swaggerify(app, routes, errorHandler);
     return this;
   }
 
   listen(p: string | number = process.env.PORT): Application {
-    const welcome = port => () => log.info(`up and running in ${process.env.NODE_ENV || 'development'} @: ${os.hostname() } on port: ${port}}`);
+    const welcome = port => () =>
+      log.info(`up and running in ${process.env.NODE_ENV || 'development'} @: ${os.hostname() } on port: ${port}}`);
     http.createServer(app).listen(p, welcome(p));
     return app;
   }
