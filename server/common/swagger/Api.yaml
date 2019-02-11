@@ -2,11 +2,13 @@ swagger: "2.0"
 info:
   version: 1.0.0
   title: alto
-  description: Mock API app for Alto
+  description: The Alto trip-service allows riders to track the status of their trips, get information
+    about their driver, send their drivers notes, update the vibe of their trip,
+    or flash some LEDs to identify their vehicle.
 basePath: /api/v1
 tags:
   - name: Trips
-    description: Endpoints to retrieve trips
+    description: Manage Trips
   - name: Specification
     description: The swagger API specification
 
@@ -19,25 +21,25 @@ produces:
 definitions:
   NoteBody:
     type: object
-    title: A trip note
+    title: Driver Note
     required:
       - note
     properties:
       note:
         type: string
-        example: Can you drop me off at AA International Bag Drop please?
+        example: Can you drop me off at the Delta gate instead?
   VibeBody:
     type: object
-    title: A trip vibe
+    title: Trip Vibe
     required:
-      - vibe
+      - vibeId
     properties:
-      vibe:
+      vibeId:
         type: string
-        example: VAPORWAVE
+        example: FIZZ
   ColorBody:
     type: object
-    title: A hex RGB color used to blink the vehicle's lights
+    title: Color
     required:
       - color
     properties:
@@ -46,26 +48,21 @@ definitions:
         example: '#FF0000'
 
 paths:
-  /trips:
-    get:
-      tags:
-        - Trips
-      description: Fetch all trips
-      responses:
-        200:
-          description: Returns all trips
   /trips/current:
     get:
       tags:
         - Trips
-      description: Get the current trip for the currently signed in user
+      description: Get the user's currently active trip (if there is one)
       responses:
         200:
-          description: Returns the current trip
+          description: The user's currently active trip
+        404:
+          description: The trip was not found
   /trips/{id}:
     get:
       tags:
         - Trips
+      description: Get a specific trip
       parameters:
         - name: id
           in: path
@@ -74,12 +71,13 @@ paths:
           type: string
       responses:
         200:
-          description: Return the trip with the specified id
+          description: The specified trip
         404:
-          description: Trip not found
+          description: The trip was not found
     delete:
       tags:
         - Trips
+      description: Cancel a trip in progress
       parameters:
         - name: id
           in: path
@@ -89,34 +87,42 @@ paths:
       responses:
         204:
           description: The trip was cancelled successfully
+        404:
+          description: The trip was not found
   /trips/{id}/updates:
     get:
       tags:
         - Trips
+      description: Stream all updates for a particular trip. <span style="color:red"><strong>NOTE!:</strong>
+        Swagger does not support Server-Sent Events at this time. Instead, open
+        [this link](http://localhost:3000/api/v1/trips/1234/updates) in another tab, then come back here and make
+        some updates (like cancelling a trip or updating the vibe!) and watch them stream in real time in your other
+        tab.</span>
       parameters:
         - name: id
           in: path
           required: true
-          description: The id of the trip to retrieve updates for
+          description: The id of the trip to stream updates for
           type: string
       responses:
         200:
           description: Streams server-sent events with updates to the specified trip
         404:
-          description: Trip not found
+          description: The trip was not found
   /trips/{id}/note:
     put:
       tags:
         - Trips
+      description: Update the trip note
       parameters:
         - name: id
           in: path
           required: true
-          description: The id of the trip to update
+          description: The id of the trip to update the note for
           type: string
         - name: note
           in: body
-          description: The note you wish to set
+          description: The updated note body
           required: true
           schema:
             $ref: "#/definitions/NoteBody"
@@ -124,49 +130,51 @@ paths:
         204:
           description: The note was updated successfully
         404:
-          description: Trip not found
+          description: The trip was not found
   /trips/{id}/vibe:
     put:
       tags:
         - Trips
+      description: Update the vibe of your trip
       parameters:
         - name: id
           in: path
           required: true
-          description: The id of the trip to update
+          description: The id of the trip to update the vibe for
           type: string
         - name: vibe
           in: body
-          description: The vibe you wish to set
+          description: The updated vibeId
           required: true
           schema:
             $ref: "#/definitions/VibeBody"
       responses:
         204:
-          description: The note was updated successfully
+          description: The vibe was updated successfully
         404:
-          description: Trip not found
+          description: The trip was not found
   /trips/{id}/vehicle/identification-request:
     post:
       tags:
         - Trips
+      description: Blink the LEDs on the front of your vehicle
       parameters:
         - name: id
           in: path
           required: true
-          description: The id of the trip to update
+          description: The id of the trip whose vehicle you want to identify
           type: string
         - name: color
           in: body
-          description: The color you wish to identify the vehicle with
+          description: The color to identify the vehicle with
           required: true
           schema:
             $ref: "#/definitions/ColorBody"
       responses:
         204:
-          description: The vehicle successfully identified itself
+          description: The vehicle was successfully identified
         404:
-          description: Trip not found
+          description: The trip was not found
 
   /spec:
     get:

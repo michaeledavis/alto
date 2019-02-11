@@ -102,7 +102,7 @@ describe('Trips', () => {
 
     const result = await request(Server)
       .put(`/api/v1/trips/${tripId}/vibe`)
-      .send({vibe: updatedVibe});
+      .send({vibeId: updatedVibe});
 
     expect(result.body)
       .to.be.an('object');
@@ -126,7 +126,7 @@ describe('Trips', () => {
 
     const result = await request(Server)
       .put(`/api/v1/trips/${tripId}/vibe`)
-      .send({vibe: updatedVibe});
+      .send({vibeId: updatedVibe});
 
     expect(result.body)
       .to.be.an('object');
@@ -140,7 +140,7 @@ describe('Trips', () => {
 
     const result = await request(Server)
       .put(`/api/v1/trips/${tripId}/vibe`)
-      .send({vibe: updatedVibe});
+      .send({vibeId: updatedVibe});
 
     expect(result.body)
       .to.be.an('object');
