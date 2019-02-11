@@ -1,4 +1,4 @@
-import {BadRequestError, DriverNotFoundError, TripNotFoundError, VehicleNotFoundError} from "../api/errors/errors";
+import {BadRequestError, DriverNotFoundError, TripNotFoundError, VehicleNotFoundError} from "./api/errors/errors";
 import {Application} from "express";
 
 
