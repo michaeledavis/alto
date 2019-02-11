@@ -42,8 +42,6 @@ export class Controller {
 
       tripEmitter.addListener(tripId, listener);
 
-      console.log(tripEmitter.listenerCount(tripId));
-
       req.on('close', () => {
         clearInterval(heartbeat);
         tripEmitter.removeListener(tripId, listener);
