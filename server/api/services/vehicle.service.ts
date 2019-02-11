@@ -28,6 +28,7 @@ vehicles.set('alto08', {
   }
 });
 
+// This service is mocked - it would call out to a different service
 export class VehicleService {
 
   byId(vehicleId: string): Promise<Vehicle> {

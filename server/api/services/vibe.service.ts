@@ -5,6 +5,7 @@ import _ from 'lodash';
 
 let vibes = ['VAPORWAVE_BEATS', 'FIZZ', 'LIFTOFF'];
 
+// This service is mocked - it would call out to a different service
 export class VibeService {
 
   validateVibe(vibeId: string): Promise<void> {
