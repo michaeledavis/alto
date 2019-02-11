@@ -9,7 +9,11 @@ vehicles.set('alto09', {
   imageURI: '/images/alto09',
   makeAndModel: '2019 Volkswagen Atlas',
   color: 'Pure White',
-  name: 'Alto 09'
+  name: 'Alto 09',
+  seats: {
+    min: 1,
+    max: 5
+  }
 });
 
 vehicles.set('alto08', {
@@ -17,7 +21,11 @@ vehicles.set('alto08', {
   imageURI: '/images/alto08',
   makeAndModel: '2018 Volkswagen Atlas',
   color: 'Pure Grey',
-  name: 'Alto 08'
+  name: 'Alto 08',
+  seats: {
+    min: 1,
+    max: 5
+  }
 });
 
 export class VehicleService {

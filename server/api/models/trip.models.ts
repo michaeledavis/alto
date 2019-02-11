@@ -27,16 +27,27 @@ export interface Driver {
   description?: string
 }
 
+export interface VehicleSeats {
+  min: number,
+  max: number
+}
+
 export interface Vehicle {
   id: string,
   imageURI?: string,
   makeAndModel?: string,
   color?: string,
-  name?: string
+  name?: string,
+  seats?: VehicleSeats
 }
 
 export interface ContactInfo {
   phoneNumber: string
+}
+
+export interface PaymentInfo {
+  id: string,
+  nickname: string
 }
 
 export interface Trip {
@@ -53,5 +64,6 @@ export interface Trip {
   vehicle: Vehicle,
   driver: Driver,
   vibeId: string,
-  contactInfo?: ContactInfo
+  contactInfo?: ContactInfo,
+  paymentInfo: PaymentInfo
 }

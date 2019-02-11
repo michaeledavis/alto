@@ -18,11 +18,11 @@ trips.set('1234', {
   estimatedFare: {
     lowEstimate: {
       currency: 'USD',
-      amount: 65
+      amount: 6500
     },
     highEstimate: {
       currency: 'USD',
-      amount: 75
+      amount: 7500
     }
   },
   note: 'Can you drop me off at AA International Bag Drop please?',
@@ -55,7 +55,11 @@ trips.set('1234', {
   driver: {
     id: '0809'
   },
-  vibeId: 'VAPORWAVE_BEATS'
+  vibeId: 'VAPORWAVE_BEATS',
+  paymentInfo: {
+    id: '576858',
+    nickname: 'Amex01'
+  }
 });
 
 const sharedPhoneNumbers = [
