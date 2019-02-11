@@ -5,6 +5,8 @@ info:
   description: The Alto trip-service allows riders to track the status of their trips, get information
     about their driver, send their drivers notes, update the vibe of their trip,
     or flash some LEDs to identify their vehicle.
+    </br><span style="color:red"><strong>NOTE!</strong>
+    Use tripId 1234 with any of the below requests</span>
 basePath: /api/v1
 tags:
   - name: Trips
