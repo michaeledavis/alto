@@ -3,7 +3,7 @@ import log from '../../common/logger'
 import {DriverNotFoundError} from "../errors/errors";
 import {Driver} from "../models/trip.models";
 
-let drivers = new Map<string, Driver>();
+const drivers = new Map<string, Driver>();
 drivers.set('0809', {
   id: '0809',
   friendlyName: 'Steph',
@@ -14,9 +14,15 @@ drivers.set('0809', {
 // This service is mocked - it would call out to a different service
 export class DriverService {
 
+  drivers: Map<string, Driver>;
+
+  constructor(drivers: Map<string, Driver>) {
+    this.drivers = drivers;
+  }
+
   byId(driverId: string): Promise<Driver> {
     log.info(`Retrieving driver for driverId: [${driverId}]`);
-    const driver = drivers.get(driverId);
+    const driver = this.drivers.get(driverId);
 
     if (!driver) {
       log.warn(`Driver could not be found for driverId: [${driverId}]`);
@@ -29,4 +35,4 @@ export class DriverService {
 
 }
 
-export default new DriverService();
+export default new DriverService(drivers);

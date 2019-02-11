@@ -29,6 +29,7 @@
     "@types/mocha": "^5.2.5",
     "@types/pino": "^5.20.0",
     "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
     "mocha": "^5.0.5",
     "nodemon": "^1.18.9",
     "pino-pretty": "^2.5.0",

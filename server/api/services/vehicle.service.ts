@@ -3,7 +3,7 @@ import log from '../../common/logger'
 import {VehicleNotFoundError} from "../errors/errors";
 import {Vehicle} from "../models/trip.models";
 
-let vehicles = new Map<string, Vehicle>();
+const vehicles = new Map<string, Vehicle>();
 vehicles.set('alto09', {
   id: 'alto09',
   imageURI: '/images/alto09',
@@ -31,9 +31,15 @@ vehicles.set('alto08', {
 // This service is mocked - it would call out to a different service
 export class VehicleService {
 
+  vehicles: Map<string, Vehicle>;
+
+  constructor(vehicles: Map<string, Vehicle>) {
+    this.vehicles = vehicles;
+  }
+
   byId(vehicleId: string): Promise<Vehicle> {
     log.info(`Retrieving vehicle for vehicleId: [${vehicleId}]`);
-    const vehicle = vehicles.get(vehicleId);
+    const vehicle = this.vehicles.get(vehicleId);
 
     if (!vehicle) {
       log.warn(`Vehicle could not be found for vehicleId: [${vehicleId}]`);
@@ -46,4 +52,4 @@ export class VehicleService {
 
 }
 
-export default new VehicleService();
+export default new VehicleService(vehicles);

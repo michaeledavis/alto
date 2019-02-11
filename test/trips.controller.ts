@@ -16,6 +16,34 @@ describe('Trips', () => {
         .to.equal(200);
   });
 
+  it('should return a 404 for the current trip if there isn\'t one', async () => {
+    const result = await request(Server)
+      .get('/api/v1/trips/current')
+      .expect('Content-Type', /json/);
+
+    expect(result.body)
+      .to.be.an('object');
+    expect(result.status)
+      .to.equal(200);
+
+    const cancelledTrip = await request(Server)
+      .delete('/api/v1/trips/1234');
+
+    expect(cancelledTrip.body)
+      .to.be.an('object');
+    expect(cancelledTrip.status)
+      .to.equal(204);
+
+    const cancelledCurrentTrip = await request(Server)
+      .get('/api/v1/trips/current')
+      .expect('Content-Type', /json/);
+
+    expect(cancelledCurrentTrip.body)
+      .to.be.an('object');
+    expect(cancelledCurrentTrip.status)
+      .to.equal(404);
+  });
+
   it('should get the trip by id', async () => {
     const result = await request(Server)
       .get('/api/v1/trips/1234')
@@ -38,7 +66,7 @@ describe('Trips', () => {
       .to.equal(404);
   });
 
-  it('should delete a trip', async () => {
+  it('should cancel a trip', async () => {
     const result = await request(Server)
       .delete('/api/v1/trips/1234');
 
@@ -48,7 +76,7 @@ describe('Trips', () => {
       .to.equal(204);
   });
 
-  it('should return a 404 when deleting a non-existent trip', async () => {
+  it('should return a 404 when cancelling a non-existent trip', async () => {
     const result = await request(Server)
       .delete('/api/v1/trips/5678');
 
@@ -146,6 +174,43 @@ describe('Trips', () => {
       .to.be.an('object');
     expect(result.status)
       .to.equal(400);
+  });
+
+  it('should get the driver contact info', async () => {
+    const result = await request(Server)
+      .get('/api/v1/trips/1234/driver-contact-info')
+      .expect('Content-Type', /json/);
+
+    expect(result.body)
+      .to.be.an('object')
+      .to.have.property('phoneNumber');
+    expect(result.status)
+      .to.equal(200);
+  });
+
+  it('should get the same driver contact info twice', async () => {
+    const result = await request(Server)
+      .get('/api/v1/trips/1234/driver-contact-info')
+      .expect('Content-Type', /json/);
+
+    expect(result.body)
+      .to.be.an('object')
+      .to.have.property('phoneNumber');
+    expect(result.status)
+      .to.equal(200);
+
+    const phoneNumber = result.body.phoneNumber;
+
+    const secondResult = await request(Server)
+      .get('/api/v1/trips/1234/driver-contact-info')
+      .expect('Content-Type', /json/);
+
+    expect(secondResult.body)
+      .to.be.an('object')
+      .to.have.property('phoneNumber')
+      .that.equals(phoneNumber);
+    expect(secondResult.status)
+      .to.equal(200);
   });
 
   it('should request vehicle identification', async () => {

@@ -3,10 +3,16 @@ import log from '../../common/logger'
 import {BadRequestError} from "../errors/errors";
 import _ from 'lodash';
 
-let vibes = ['VAPORWAVE_BEATS', 'FIZZ', 'LIFTOFF'];
+const vibes = ['VAPORWAVE_BEATS', 'FIZZ', 'LIFTOFF'];
 
 // This service is mocked - it would call out to a different service
 export class VibeService {
+
+  vibes: string[];
+
+  constructor(vibes: string[]) {
+    this.vibes = vibes;
+  }
 
   validateVibe(vibeId: string): Promise<void> {
     log.info(`Validating vibeId: [${vibeId}]`);
@@ -22,4 +28,4 @@ export class VibeService {
 
 }
 
-export default new VibeService();
+export default new VibeService(vibes);

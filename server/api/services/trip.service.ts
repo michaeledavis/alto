@@ -9,7 +9,7 @@ import vehicleService from '../services/vehicle.service';
 import driverService from '../services/driver.service';
 import vibeService from '../services/vibe.service';
 
-let trips = new Map<string, Trip>();
+const trips = new Map<string, Trip>();
 trips.set('1234', {
   id: '1234',
   userId: '5654',
@@ -74,9 +74,17 @@ const sharedPhoneNumbers = [
 
 export class TripService {
 
+  trips: Map<string, Trip>;
+  sharedPhoneNumbers: string[];
+
+  constructor(trips: Map<string, Trip>, sharedPhoneNumbers: string[]) {
+    this.trips = trips;
+    this.sharedPhoneNumbers = sharedPhoneNumbers;
+  }
+
   byId(tripId: string): Promise<Trip> {
     log.info(`Retrieving trip for tripId: [${tripId}]`);
-    const trip = trips.get(tripId);
+    const trip = this.trips.get(tripId);
 
     if (!trip) {
       log.warn(`Trip could not be found for tripId: [${tripId}]`);
@@ -99,7 +107,7 @@ export class TripService {
 
   currentByUser(userId: string): Promise<Trip> {
     log.info(`Retrieving current trip for userId: [${userId}]`);
-    const currentTrip = _.find([...trips.values()], (trip) => {
+    const currentTrip = _.find([...this.trips.values()], (trip) => {
       return trip.userId === userId && !trip.cancelled && !trip.completed && trip.requested.isBefore(moment());
     });
 
@@ -119,7 +127,7 @@ export class TripService {
         ...trip,
         cancelled: moment()
       };
-      trips.set(trip.id, updatedTrip);
+      this.trips.set(trip.id, updatedTrip);
       tripEmitter.emit(tripId, updatedTrip);
     });
   }
@@ -132,7 +140,7 @@ export class TripService {
         ...trip,
         note
       };
-      trips.set(trip.id, updatedTrip);
+      this.trips.set(trip.id, updatedTrip);
       tripEmitter.emit(tripId, updatedTrip);
     });
   }
@@ -146,7 +154,7 @@ export class TripService {
           ...trip,
           vibeId
         };
-        trips.set(trip.id, updatedTrip);
+        this.trips.set(trip.id, updatedTrip);
         tripEmitter.emit(tripId, updatedTrip);
       });
     });
@@ -168,7 +176,7 @@ export class TripService {
             phoneNumber
           }
         };
-        trips.set(trip.id, updatedTrip);
+        this.trips.set(trip.id, updatedTrip);
 
         return updatedTrip.contactInfo;
       }
@@ -185,4 +193,4 @@ export class TripService {
   }
 }
 
-export default new TripService();
+export default new TripService(trips, sharedPhoneNumbers);
