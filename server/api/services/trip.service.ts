@@ -89,7 +89,12 @@ export class TripService {
       return trip.userId === userId && !trip.cancelled && !trip.completed && trip.requested.isBefore(moment());
     });
 
-    return this.byId(currentTrip.id);
+    if (!currentTrip) {
+      log.warn(`Trip could not be found for userId: [${userId}]`);
+      throw new TripNotFoundError(null);
+    } else {
+      return this.byId(currentTrip.id);
+    }
   }
 
   cancelById(tripId: string): Promise<void> {
