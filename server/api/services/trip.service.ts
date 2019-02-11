@@ -6,6 +6,7 @@ import {TripNotFoundError} from '../errors/errors';
 import tripEmitter from '../emitters/trip.eventemitter';
 import {Trip} from '../models/trip.models';
 import vehicleService from '../services/vehicle.service';
+import driverService from '../services/driver.service';
 
 let trips = new Map<string, Trip>();
 trips.set('1234', {
@@ -50,10 +51,8 @@ trips.set('1234', {
   vehicle: {
     id: 'alto09'
   },
-  driver: { // TODO: should be just an identifier
-    friendlyName: 'Steph',
-    description: 'Steph Festiculma is a graduate of Parsons New School in New York and fluent in' +
-      'Portuguese, Spanish, and English. Steph has been driving with Alto since 2018.'
+  driver: {
+    id: '0809'
   },
   vibe: { // TODO: should be just an identifier
     name: 'Vaporwave Beats'
@@ -70,10 +69,14 @@ export class TripService {
       log.warn(`Trip could not be found for tripId: [${tripId}]`);
       throw new TripNotFoundError(tripId)
     } else {
-      return vehicleService.byId(trip.vehicle.id).then((vehicle) => {
+      return Promise.all([
+        vehicleService.byId(trip.vehicle.id),
+        driverService.byId(trip.driver.id)
+      ]).then(([vehicle, driver]) => {
         const updatedTrip = {
           ...trip,
-          vehicle
+          vehicle,
+          driver
         };
         log.info(`Returning trip with tripId: [${tripId}]`);
         return updatedTrip;

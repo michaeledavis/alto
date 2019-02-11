@@ -22,8 +22,9 @@ export interface Location {
 }
 
 export interface Driver {
-  friendlyName: string,
-  description: string
+  id: string,
+  friendlyName?: string,
+  description?: string
 }
 
 export interface Vehicle {

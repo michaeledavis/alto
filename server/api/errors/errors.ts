@@ -17,3 +17,13 @@ export class VehicleNotFoundError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 }
+
+export class DriverNotFoundError extends Error {
+  constructor(driverId: string) {
+    super(`Driver could not be found for driverId: [${driverId}].`);
+
+    this.name = this.constructor.name;
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
