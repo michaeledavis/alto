@@ -61,6 +61,7 @@ export interface Trip {
   note: string,
   destination: Location,
   origin: Location,
+  currentLocation: GpsCoordinates,
   vehicle: Vehicle,
   driver: Driver,
   vibeId: string,

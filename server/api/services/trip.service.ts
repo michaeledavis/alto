@@ -39,7 +39,6 @@ trips.set('1234', {
     }
   },
   origin: {
-    shortName: null,
     fullName: [
       '449 Flora St.',
       'Dallas, Texas 75201'
@@ -48,6 +47,10 @@ trips.set('1234', {
       latitude: 32.890453,
       longitude: -97.036203
     }
+  },
+  currentLocation: {
+    latitude: 32.890453,
+    longitude: -97.036203
   },
   vehicle: {
     id: 'alto09'
