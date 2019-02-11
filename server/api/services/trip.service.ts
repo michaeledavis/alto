@@ -2,63 +2,9 @@ import Promise from 'bluebird';
 import log from '../../common/logger'
 import _ from 'lodash';
 import moment from 'moment';
-import {Moment} from "moment";
-import {TripNotFoundError} from "../../common/errors";
-import TripEmitter from '../../common/trip.eventemitter';
-
-// TODO: Move these models into their own file(s)?
-interface Money {
-    currency: string,
-    amount: number,
-}
-
-interface FareEstimate {
-    lowEstimate: Money,
-    highEstimate: Money
-}
-
-interface GpsCoordinates {
-    latitude: number,
-    longitude: number
-}
-
-interface Location {
-    shortName?: string,
-    fullName: string[],
-    coordinates: GpsCoordinates
-}
-
-interface Driver {
-    friendlyName: string,
-    description: string
-}
-
-interface Vehicle {
-    imageURI: string,
-    makeAndModel: string,
-    color: string,
-    name: string
-}
-
-interface Vibe {
-    name: string
-}
-
-interface Trip {
-    id: string,
-    userId: string,
-    estimatedArrival: Moment,
-    requested: Moment,
-    completed?: Moment,
-    cancelled?: Moment,
-    estimatedFare: FareEstimate,
-    note: string,
-    destination: Location,
-    origin: Location,
-    vehicle: Vehicle,
-    driver: Driver,
-    vibe: Vibe
-}
+import {TripNotFoundError} from "../errors/errors";
+import tripEmitter from '../emitters/trip.eventemitter';
+import {Trip} from "../models/trip.models";
 
 let trips = new Map<string, Trip>();
 trips.set('1234', {
@@ -100,23 +46,23 @@ trips.set('1234', {
             longitude: -97.036203
         }
     },
-    vehicle: {
+    vehicle: { // TODO: should be just an identifier
         imageURI: '/images/alto09',
         makeAndModel: '2019 Volkswagen Atlas',
         color: 'Pure White',
         name: 'Alto 09'
     },
-    driver: {
+    driver: { // TODO: should be just an identifier
         friendlyName: 'Steph',
         description: 'Steph Festiculma is a graduate of Parsons New School in New York and fluent in' +
             'Portuguese, Spanish, and English. Steph has been driving with Alto since 2018.'
     },
-    vibe: {
+    vibe: { // TODO: should be just an identifier
         name: 'Vaporwave Beats'
     }
 });
 
-export class TripsService {
+export class TripService {
 
     byId(tripId: string): Promise<Trip> {
         log.info(`Retrieving trip for tripId: [${tripId}]`);
@@ -154,7 +100,7 @@ export class TripsService {
                 cancelled: moment()
             };
             trips.set(trip.id, updatedTrip);
-            TripEmitter.emit(tripId, updatedTrip);
+            tripEmitter.emit(tripId, updatedTrip);
         });
     }
 
@@ -166,7 +112,7 @@ export class TripsService {
                 note
             };
             trips.set(trip.id, updatedTrip);
-            TripEmitter.emit(tripId, updatedTrip);
+            tripEmitter.emit(tripId, updatedTrip);
         });
     }
 
@@ -181,7 +127,7 @@ export class TripsService {
                 }
             };
             trips.set(trip.id, updatedTrip);
-            TripEmitter.emit(tripId, updatedTrip);
+            tripEmitter.emit(tripId, updatedTrip);
         });
     }
 
@@ -195,4 +141,4 @@ export class TripsService {
     }
 }
 
-export default new TripsService();
+export default new TripService();

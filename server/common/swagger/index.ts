@@ -2,7 +2,7 @@ import middleware from 'swagger-express-middleware';
 import { Application } from 'express';
 import path from 'path';
 import log from '../logger';
-import {TripNotFoundError} from "../errors";
+import {TripNotFoundError} from "../../api/errors/errors";
 
 export default function (app: Application, routes: (app: Application) => void) {
   middleware(path.join(__dirname, 'Api.yaml'), app, function(err, middleware) {

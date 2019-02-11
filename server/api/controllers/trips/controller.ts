@@ -1,11 +1,11 @@
-import TripsService from '../../services/trips.service';
+import tripsService from '../../services/trip.service';
 import {Request, Response} from 'express';
-import TripEmitter from '../../../common/trip.eventemitter';
+import tripEmitter from '../../emitters/trip.eventemitter';
 
 export class Controller {
 
   currentByUser(req: Request, res: Response, next: any): void {
-    TripsService.currentByUser('5654').then(result => {
+    tripsService.currentByUser('5654').then(result => {
       if (!result) {
         res.status(404).end();
       } else {
@@ -15,7 +15,7 @@ export class Controller {
   }
 
   byId(req: Request, res: Response, next: any): void {
-    TripsService.byId(req.params.id).then(result => {
+    tripsService.byId(req.params.id).then(result => {
       res.json(result);
     }).catch(next);
   }
@@ -23,7 +23,7 @@ export class Controller {
   streamTripUpdates(req: Request, res: Response, next: any): void {
     const tripId = req.params.id;
 
-    TripsService.byId(tripId).then(_ => {
+    tripsService.byId(tripId).then(_ => {
 
       res.writeHead(200, {
         'Content-Type': 'text/event-stream',
@@ -39,38 +39,38 @@ export class Controller {
         res.write('data: ' + JSON.stringify(trip) + '\n\n');
       };
 
-      TripEmitter.addListener(tripId, listener);
+      tripEmitter.addListener(tripId, listener);
 
-      console.log(TripEmitter.listenerCount(tripId));
+      console.log(tripEmitter.listenerCount(tripId));
 
       req.on('close', () => {
         clearInterval(heartbeat);
-        TripEmitter.removeListener(tripId, listener);
+        tripEmitter.removeListener(tripId, listener);
       });
 
     }).catch(next);
   }
 
   cancel(req: Request, res: Response, next: any): void {
-    TripsService.cancelById(req.params.id).then(() => {
+    tripsService.cancelById(req.params.id).then(() => {
       res.status(204).end();
     }).catch(next);
   }
 
   setNote(req: Request, res: Response, next: any): void {
-    TripsService.setNoteById(req.params.id, req.body.note).then(() => {
+    tripsService.setNoteById(req.params.id, req.body.note).then(() => {
       res.status(204).end();
     }).catch(next);
   }
 
   setVibe(req: Request, res: Response, next: any): void {
-    TripsService.setVibeById(req.params.id, req.body.vibe).then(() => {
+    tripsService.setVibeById(req.params.id, req.body.vibe).then(() => {
       res.status(204).end();
     }).catch(next);
   }
 
   requestIdentification(req: Request, res: Response, next: any): void {
-    TripsService.requestIdentificationById(req.params.id, req.body.color).then(() => {
+    tripsService.requestIdentificationById(req.params.id, req.body.color).then(() => {
       res.status(204).end();
     }).catch(next);
   }
