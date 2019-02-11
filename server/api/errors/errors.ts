@@ -7,3 +7,13 @@ export class TripNotFoundError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 }
+
+export class VehicleNotFoundError extends Error {
+  constructor(vehicleId: string) {
+    super(`Vehicle could not be found for vehicleId: [${vehicleId}].`);
+
+    this.name = this.constructor.name;
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}

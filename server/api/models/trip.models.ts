@@ -27,10 +27,11 @@ export interface Driver {
 }
 
 export interface Vehicle {
-  imageURI: string,
-  makeAndModel: string,
-  color: string,
-  name: string
+  id: string,
+  imageURI?: string,
+  makeAndModel?: string,
+  color?: string,
+  name?: string
 }
 
 export interface Vibe {

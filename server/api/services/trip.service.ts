@@ -2,9 +2,10 @@ import Promise from 'bluebird';
 import log from '../../common/logger'
 import _ from 'lodash';
 import moment from 'moment';
-import {TripNotFoundError} from "../errors/errors";
+import {TripNotFoundError} from '../errors/errors';
 import tripEmitter from '../emitters/trip.eventemitter';
-import {Trip} from "../models/trip.models";
+import {Trip} from '../models/trip.models';
+import vehicleService from '../services/vehicle.service';
 
 let trips = new Map<string, Trip>();
 trips.set('1234', {
@@ -46,11 +47,8 @@ trips.set('1234', {
       longitude: -97.036203
     }
   },
-  vehicle: { // TODO: should be just an identifier
-    imageURI: '/images/alto09',
-    makeAndModel: '2019 Volkswagen Atlas',
-    color: 'Pure White',
-    name: 'Alto 09'
+  vehicle: {
+    id: 'alto09'
   },
   driver: { // TODO: should be just an identifier
     friendlyName: 'Steph',
@@ -72,8 +70,14 @@ export class TripService {
       log.warn(`Trip could not be found for tripId: [${tripId}]`);
       throw new TripNotFoundError(tripId)
     } else {
-      log.info(`Returning trip with tripId: [${tripId}]`);
-      return Promise.resolve(trip);
+      return vehicleService.byId(trip.vehicle.id).then((vehicle) => {
+        const updatedTrip = {
+          ...trip,
+          vehicle
+        };
+        log.info(`Returning trip with tripId: [${tripId}]`);
+        return updatedTrip;
+      });
     }
   }
 
@@ -83,13 +87,7 @@ export class TripService {
       return trip.userId === userId && !trip.cancelled && !trip.completed && trip.requested.isBefore(moment());
     });
 
-    if (!currentTrip) {
-      log.warn(`Current trip could not be found for userId: [${userId}]`);
-      throw new TripNotFoundError(userId) // TODO: support userId for this error
-    } else {
-      log.info(`Returning trip with tripId: [${currentTrip.id}] for userId: [${userId}]`);
-      return Promise.resolve(currentTrip);
-    }
+    return this.byId(currentTrip.id);
   }
 
   cancelById(tripId: string): Promise<void> {
